@@ -7,6 +7,7 @@ import sys
 import getopt
 import csv
 from inc.query import Query
+from inc.tweets import Tweets
 
 
 def process_arguments(argv):
@@ -55,6 +56,13 @@ def process_arguments(argv):
 
 tweetFile, queriesFile, frecuenciesFile, destinationDir, entity, k, k1, k2 = process_arguments(sys.argv[1:])
 
+# Process tweet file
+tweets = []
+try:
+    tweets = Tweets()
+    tweets.load_file(tweetFile)
+except EnvironmentError as exception:
+    print(exception)
 # Process queriesFile
 queries = []
 try:
