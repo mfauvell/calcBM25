@@ -8,6 +8,7 @@ import getopt
 import csv
 from inc.query import Query
 from inc.tweets import Tweets
+from inc.frecuencies import Frecuencies
 
 
 def process_arguments(argv):
@@ -53,7 +54,6 @@ def process_arguments(argv):
         sys.exit(2)
     return tweet_file, queries_file, frecuencies_file, destination_dir, local_entity, local_k, local_k1, local_k2
 
-
 tweetFile, queriesFile, frecuenciesFile, destinationDir, entity, k, k1, k2 = process_arguments(sys.argv[1:])
 
 # Process tweet file
@@ -63,6 +63,8 @@ try:
     tweets.load_file(tweetFile)
 except EnvironmentError as exception:
     print(exception)
+    sys.exit(2)
+
 # Process queriesFile
 queries = []
 try:
@@ -72,5 +74,15 @@ try:
             queries.append(Query(row))
 except EnvironmentError as exception:
     print(exception)
-for query in queries:
-    print(query.terms)
+    sys.exit(2)
+
+# Process frecencies file.
+frecuencies = []
+try:
+    frecuencies = Frecuencies()
+    frecuencies.load_file(frecuenciesFile)
+except EnvironmentError as exception:
+    print(exception)
+    sys.exit(2)
+
+print(frecuencies.frecuencies)

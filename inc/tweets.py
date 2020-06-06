@@ -20,8 +20,8 @@ class Tweets:
         '''Return and array of goldstandard for query id'''
         goldstandard = []
         for tweet in self.documents:
-            if tweet.query == query_id:
-                goldstandard.append({'tweet': tweet.id, 'relevance': 1})
+            if int(tweet['query']) == int(query_id):
+                goldstandard.append({'tweet': tweet['id'], 'relevance': 1})
             else:
-                goldstandard.append({'tweet': tweet.id, 'relevance': 0})
+                goldstandard.append({'tweet': tweet['id'], 'relevance': 0})
         return goldstandard
