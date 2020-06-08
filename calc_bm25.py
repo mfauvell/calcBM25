@@ -23,12 +23,12 @@ def process_arguments(argv):
     local_frecuencies_file = ''
     local_entity = ''
     local_destination_dir = 'result'
-    local_k = ''
+    local_b = ''
     local_k1 = ''
     local_k2 = ''
     try:
         opts, _ = getopt.getopt(argv, "ht:q:f:d:e:",
-                                ["tweetFile=", "queriesFile=", "frecuenciesFile=", "destinationDir=", "entity=", "k1=", "k2=", "K="])
+                                ["tweetFile=", "queriesFile=", "frecuenciesFile=", "destinationDir=", "entity=", "k1=", "k2=", "b="])
     except getopt.GetoptError:
         print(help_text)
         sys.exit(2)
@@ -46,8 +46,8 @@ def process_arguments(argv):
             local_destination_dir = arg
         elif opt in ("-e", "--entity"):
             local_entity = arg
-        elif opt == "--K":
-            local_k = float(arg)
+        elif opt == "--b":
+            local_b = float(arg)
         elif opt == "--k1":
             local_k1 = float(arg)
         elif opt == "--k2":
@@ -55,7 +55,7 @@ def process_arguments(argv):
     if (local_tweet_file == '' or local_queries_file == '' or local_frecuencies_file == '' or local_entity == ''):
         print(help_text)
         sys.exit(2)
-    return local_tweet_file, local_queries_file, local_frecuencies_file, local_destination_dir, local_entity, local_k, local_k1, local_k2
+    return local_tweet_file, local_queries_file, local_frecuencies_file, local_destination_dir, local_entity, local_b, local_k1, local_k2
 
 def calculate_bm25(rt_bm25, r_bm25, nt_bm25, n_bm25, f_bm25, qf_bm25, k_bm25, k1_bm25, k2_bm25):
     '''Calculate BM25 of a term and document'''
@@ -65,7 +65,11 @@ def calculate_bm25(rt_bm25, r_bm25, nt_bm25, n_bm25, f_bm25, qf_bm25, k_bm25, k1
 
     return first_term * second_term * third_term
 
-def main(tweet_file, queries_file, frecuencies_file, destination_dir, entity, k_var, k1_var, k2_var):
+def calculate_k(avdl, dl_document, b_bm25, k1_bm25):
+    '''Calculate valeu of K'''
+    return k1_bm25 * ((1 - b_bm25) + b_bm25 * (dl_document / avdl))
+
+def main(tweet_file, queries_file, frecuencies_file, destination_dir, entity, b_var, k1_var, k2_var):
     '''Main function'''
     # Process tweet file
     tweets = []
@@ -108,6 +112,7 @@ def main(tweet_file, queries_file, frecuencies_file, destination_dir, entity, k_
                 n_var = frecuencies.get_term_frecuency(term)
                 f_var = frecuencies.get_term_tweet_frecuency(term, tweet['id'])
                 qf_var = numpy.count_nonzero(np_terms == term)
+                k_var = calculate_k(tweets.get_average_length(), tweet['lenght'], b_var, k1_var)
                 bm25 += calculate_bm25(rt_var, r_var, nt_var, n_var, f_var, qf_var, k_var, k1_var, k2_var)
             query.add_document(tweet['id'], bm25)
             query.set_goldstandard(tweets.get_goldstandard(query.identificator))
@@ -135,5 +140,5 @@ def main(tweet_file, queries_file, frecuencies_file, destination_dir, entity, k_
 
 if __name__ == "__main__":
     # Process arguments
-    tweet_file_par, queries_file_par, frecuencies_file_par, destination_dir_par, entity_par, k_var_par, k1_var_par, k2_var_par = process_arguments(sys.argv[1:])
-    main(tweet_file_par, queries_file_par, frecuencies_file_par, destination_dir_par, entity_par, k_var_par, k1_var_par, k2_var_par)
+    tweet_file_par, queries_file_par, frecuencies_file_par, destination_dir_par, entity_par, b_var_par, k1_var_par, k2_var_par = process_arguments(sys.argv[1:])
+    main(tweet_file_par, queries_file_par, frecuencies_file_par, destination_dir_par, entity_par, b_var_par, k1_var_par, k2_var_par)
