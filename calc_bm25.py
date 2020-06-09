@@ -59,7 +59,7 @@ def process_arguments(argv):
 
 def calculate_bm25(rt_bm25, r_bm25, nt_bm25, n_bm25, f_bm25, qf_bm25, k_bm25, k1_bm25, k2_bm25):
     '''Calculate BM25 of a term and document'''
-    first_term = math.log10(((r_bm25 + 0.5)/(rt_bm25 - r_bm25 + 0.5)) / ((n_bm25 - r_bm25 + 0.5) / (nt_bm25 - n_bm25 + r_bm25 + 0.5)))
+    first_term = math.log(((r_bm25 + 0.5)/(rt_bm25 - r_bm25 + 0.5)) / ((n_bm25 - r_bm25 + 0.5) / (nt_bm25 - n_bm25 + r_bm25 + 0.5)))
     second_term = ((k1_bm25 + 1) * f_bm25) / (k_bm25 + f_bm25)
     third_term = ((k2_bm25 + 1) * qf_bm25) / (k2_bm25 + qf_bm25)
 
