@@ -108,7 +108,8 @@ def main(tweet_file, queries_file, frecuencies_file, destination_dir, entity, b_
         for tweet in tweets.documents:
             bm25 = 0
             np_terms = numpy.array(query.terms)
-            for term in query.terms:
+            unique_terms = set(query.terms)
+            for term in unique_terms:
                 n_var = frecuencies.get_term_frecuency(term)
                 f_var = frecuencies.get_term_tweet_frecuency(term, tweet['id'])
                 qf_var = numpy.count_nonzero(np_terms == term)
