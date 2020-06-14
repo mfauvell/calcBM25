@@ -23,9 +23,9 @@ def process_arguments(argv):
     local_frecuencies_file = ''
     local_entity = ''
     local_destination_dir = 'result'
-    local_b = ''
-    local_k1 = ''
-    local_k2 = ''
+    local_b = 0.75
+    local_k1 = 1.2
+    local_k2 = 100
     try:
         opts, _ = getopt.getopt(argv, "ht:q:f:d:e:",
                                 ["tweetFile=", "queriesFile=", "frecuenciesFile=", "destinationDir=", "entity=", "k1=", "k2=", "b="])
